@@ -12,8 +12,11 @@ import { Button } from '../ui/button'
 import { FormError } from '../form-error'
 import { FormSuccess } from '../form-success'
 import { login } from '@/actions/login'
+import { useSearchParams } from 'next/navigation'
 
 export const LoginForm = () => {
+    const s = useSearchParams()
+    const urlError = (s.get("error") === "OAuthAccountNotLinked" ? "Email already in use!!:)" : "") || ((s.get("error") === "OAuthCallbackError" ? "Oops, Something went wrong!!:)" : ""));
 
     const [isPending, startTransition] = useTransition()
     const [error, setError] = useState<string | undefined>("")
@@ -32,7 +35,8 @@ export const LoginForm = () => {
         startTransition(() => {
             login(values).then((data) => {
                 setError(data?.error)
-                setSuccess(data?.Success)
+                // todo : add when we add 2FA
+                // setSuccess(data?.Success)
             })
         })
     }
@@ -77,7 +81,7 @@ export const LoginForm = () => {
 
                         )} />
                     </div>
-                    <FormError message={error} />
+                    <FormError message={error || urlError} />
                     <FormSuccess message={success} />
                     <Button disabled={isPending} type="submit" className="w-full">Login</Button>
                 </form>
