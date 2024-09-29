@@ -31,12 +31,11 @@ export const LoginForm = () => {
     })
 
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-        console.log(values);
         startTransition(() => {
             login(values).then((data) => {
                 setError(data?.error)
                 // todo : add when we add 2FA
-                // setSuccess(data?.Success)
+                setSuccess(data?.success)
             })
         })
     }
