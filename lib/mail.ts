@@ -26,8 +26,19 @@ export async function sendVerificationEmail(email: string, token: string) {
     await resend.emails.send({
         from: 'onboarding@resend.dev',
         to: email,
-        subject: 'Verifcation mail',
+        subject: 'Verification mail',
         // react: EmailTemplate({ firstName: 'John' }),
         html: `<p>Click <a href = "${confirmLink}">here</a> to verify !! :)</p>`
+    })
+}
+
+export async function sendPasswordResetEmail(email: string, token: string) {
+    const resetLink = `http://localhost:3000/auth/new-password?token=${token}`
+    await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: email,
+        subject: 'Reset Password',
+        // react: EmailTemplate({ firstName: 'John' }),
+        html: `<p>Click <a href = "${resetLink}">here</a> to reset password !! :)</p>`
     })
 }
