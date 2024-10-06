@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "./lib/db"
 import { getUserById } from './data/user';
 import { UserRole } from "@prisma/client"
+import { getTwoFactorConfirmationByUserId } from "./data/two-factor-confirmation";
 
 export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
     pages: {
@@ -33,6 +34,23 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
                 return false
             }
             // todo : add 2fa check
+
+            if (existingUser.istwoFactorEnabled) {
+                const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
+
+                console.log({ twoFactorConfirmation });
+
+                if (!twoFactorConfirmation) {
+                    return false;
+                }
+
+                // delete 2 factor confirmation for next signIn
+                await db.twoFactorConfirmation.delete({
+                    where: {
+                        id: twoFactorConfirmation.id
+                    }
+                })
+            }
             return true;
         },
         async session({ token, session }) {
