@@ -1,6 +1,10 @@
 import { UserRole } from "@prisma/client";
 import { DefaultSession } from "next-auth";
 
+export type ExtendedUser = DefaultSession["user"] & {
+    role: UserRole
+}
+
 export declare module "next-auth" {
     /**
      * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
@@ -10,7 +14,8 @@ export declare module "next-auth" {
             /** The user's postal address. */
             // role: "ADMIN" | "USER";
             id: string,
-            role: UserRole
+            role: UserRole,
+            istwoFactorEnabled: boolean
             /**
              * By default, TypeScript merges new interface properties and overwrites existing ones.
              * In this case, the default session user properties will be overwritten,

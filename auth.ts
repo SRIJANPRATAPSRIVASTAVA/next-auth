@@ -65,6 +65,10 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
             if (token.role && session.user) {
                 session.user.role = token.role as UserRole;
             } // https://authjs.dev/getting-started/typescript
+
+            if (session.user) {
+                session.user.istwoFactorEnabled = token.istwoFactorEnabled as boolean;
+            }
             return session
         },
         async jwt({ token }) {
@@ -76,6 +80,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
                 return token
             }
             token.role = existingUser?.role
+            token.istwoFactorEnabled = existingUser.istwoFactorEnabled
             return token
         }
     },
